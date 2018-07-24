@@ -1,0 +1,156 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title> BLOG APP </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="assets/js/jquery-3.3.1.min.js"></script>
+  <script src="assets/js/login-api.js"></script>
+  <script src="assets/js/usuario.js"></script>
+<script>
+  $(document).ready(function (){
+      $("#btnSalir").click(() => {
+          var token = window.localStorage.getItem("token");
+          LoginApi.logout(token)
+              .then(function (data) {
+                  window.localStorage.removeItem("token");
+                  window.location = "login.html";
+              })
+              .catch(error => console.log(error));
+      });
+      
+
+      //Cargamos Tabla
+      var posteos = $("#posteos");
+     // var Usuario=[];
+      var nombre;
+      var email;
+      var token = window.localStorage.getItem("token");
+
+      if (token == null) {
+          window.location = "login.html";
+      }
+      
+     /* 
+      $.ajax({
+        
+          method: 'GET',
+          url: "http://localhost:8080/users",
+          headers: { 'Authorization': 'Bearer ' + token },
+          success: function (usuario) {
+              $.each(usuario, function (ia, usua) {
+                // posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p>By: ' + posts.userId + '</p> ' + posts.body + '</td></table><hr style="color: #0056b2;"></div>');
+                //usu
+    
+
+                usu[ia].email =usua.email;
+                usu[ia].id =usua.id;
+                usu[ia].name =usua.name;
+                usu[ia].password =usua.password;
+                console.log(usu);
+
+            });
+          }
+        
+
+      });
+*/
+
+      $.ajax({
+          method: 'GET',
+          url: "http://localhost:8080/post",
+          headers: { 'Authorization': 'Bearer ' + token },
+          success: function (post) {
+             $.each(post, function (i, posts) {
+                 /*
+console.log(posts.userId);
+      $.ajax({
+    method: 'GET',
+    data: JSON.stringify(posts.userId),
+    url: 'http://localhost:8080/users/'+posts.userId,
+    headers: { 'Authorization': 'Bearer ' + token },
+                  
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (error) {
+                        reject(error);
+                    }
+              });*/
+//console.log(posts.userId);
+    $.ajax({
+    method: 'GET',
+    url: 'http://localhost:8080/users/'+posts.userId,
+    headers: { 'Authorization': 'Bearer ' + token },
+    success: function (users) {
+              //$.each(users, function (ia, comentarios)
+              //{
+                 email=comentarios.email;
+                 nombre = comentarios.name;
+                
+                 console.log(comentarios.email+" -"+comentarios.name);
+                
+             // });
+          }
+});
+
+          
+
+                 posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p>By: ' + posts.userId + '</p> ' + posts.body + '</td></table><hr style="color: #0056b2;"></div>');
+              });
+          }
+
+      });
+
+  });
+
+  function buscarPost(id)
+  {
+      location.href ="post.html?id="+id+"";
+  }
+  
+</script>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#"> BLOGAPP</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="nuevoPost.html">Nuevo Post</a></li>
+      <li class="active"><a href="#">Todos Post</a></li>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="login.html"><span class="glyphicon glyphicon-log-in" id="btnSalir"></span> Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+<article>   
+
+    <div class="container">    
+            <div id="comentarios">
+
+                </div>
+        <div class="row">
+        <div class="col-sm-8 blog-main">
+            <div class="blog-post">
+            </div>
+            <div class="form-group">
+            <div class="form-group">                      
+            <body>
+                <div class="container">
+                    <div class="row">
+                    <div class="col">
+                    <br>
+                    <div class="col-md-12">
+                    <br>
+                    <br>
+                    <table class="table">
+                    <tbody id="posteos">
+
+            </tbody>
+</article>
+</body>
+</html>
