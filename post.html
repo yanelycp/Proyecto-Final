@@ -4,18 +4,18 @@
 <head>
     <title> BLOG APP </title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="assets/js/jquery-3.3.1.min.js"></script>
-  <script src="assets/js/login-api.js"></script>
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/login-api.js"></script>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-  <script>
-    var token =window.localStorage.getItem("token");
-        var email= window.localStorage.getItem("email");
-  </script>
+    <script>
+        var token = window.localStorage.getItem("token");
+        var email = window.localStorage.getItem("email");
+    </script>
 
 </head>
 
@@ -23,7 +23,7 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#"> BLOGAPP</a>
+                <a class="navbar-brand" href="index.html"> BLOGAPP</a>
             </div>
             <ul class="nav navbar-nav">
                 <li class="active">
@@ -42,134 +42,129 @@
         </div>
     </nav>
 
-    <div class="container">        
+    <div class="container">
         <div class="media">
             <div class="media-left">
-                <img src="assets/img/usuario.ico" class="media-object" style="width:45px">              
+                <img src="assets/img/usuario.ico" class="media-object" style="width:45px">
             </div>
             <div class="media-body">
                 <h4>
                     <div id="publicacion">
-                    </div> 
-                </h4>        
-                    <div class="container">
-                        <a href="#demo" data-toggle="collapse" style="color: blue">Comentar</a>
-                            <div id="demo" class="collapse">
-                             <form class="form-signin">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Escribe un comentario">
-                                    <button id="newComentario" onclick="" class="btn btn-primary" type="button" ></button>
-                                </div>
+                    </div>
+                </h4>
+                <div class="container">
+                    <a href="#demo" data-toggle="collapse" style="color: blue">Comentar</a>
+                    <div id="demo" class="collapse">
+                        <form class="form-signin">
+                            <div class="form-group">
+                                <input type="text" placeholder="Escribe un comentario">
+                                <button id="newComentario" onclick="" class="btn btn-primary" type="button">Enviar</button>
                             </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="media">
+                <div class="media-left">
+
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <div id="comentarios">
                         </div>
-                    </div>
-        
-               
-                <div class="media">
-                    <div class="media-left">
-                        
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">
-                            <div id="comentarios">
-                            </div> 
-                        </h4>                                       
-                    </div>
+                    </h4>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 </body>
+
 </html>
 <script>
-    $(document).ready(function ()
-    {
-      $("#btnSalir").click(() => {
-          var token = window.localStorage.getItem("token");
-          LoginApi.logout(token)
-              .then(function (data) {
-                  window.localStorage.removeItem("token");
-                  window.location = "login.html";
-              })
-              .catch(error => console.log(error));
-      });
+    $(document).ready(function () {
+        $("#btnSalir").click(() => {
+            var token = window.localStorage.getItem("token");
+            LoginApi.logout(token)
+                .then(function (data) {
+                    window.localStorage.removeItem("token");
+                    window.location = "login.html";
+                })
+                .catch(error => console.log(error));
+        });
 
-    //Cargamos publicacion
-    var posteos = $("#posteos");
-    var token = window.localStorage.getItem("token");
-  
-    var usuarioId="";
-    var query = document.location.href;
-    var vars = query.split("=");
-    const id =vars[1];
-          
-    $.ajax({
-    method: 'GET',
-    url: 'http://localhost:8080/post/'+id,
-    headers: { 'Authorization': 'Bearer ' + token },
-    success: function (post) {   
-    $.ajax({
+        //Cargamos publicacion
+        var posteos = $("#posteos");
+        var token = window.localStorage.getItem("token");
+
+        var usuarioId = "";
+        var query = document.location.href;
+        var vars = query.split("=");
+        const id = vars[1];
+
+        $.ajax({
             method: 'GET',
-            url: 'http://localhost:8080/users/'+post.userId,
+            url: 'http://localhost:8080/post/' + id,
             headers: { 'Authorization': 'Bearer ' + token },
-            success: function (users) 
-            {                           
-                nombre=users.name;
-                if(nombre!=null){
-                    nombre=users.name;
-                }
-                else
-                {    nombre="-";        }
-            
-                            
-        let html="<div>";       
-        html +=nombre;
-        html +="<br> "+post.body;                 
-        html +="</ul>";
-        $("#publicacion").append(html);            
-    }
-      });  
-}
-    });               
-    
-    //carga comentario
-    $.ajax({
-    method: 'GET',
-    url: 'http://localhost:8080/post/'+id+'/comment',
-    headers: { 'Authorization': 'Bearer ' + token },
-    success: function (comment) {        
-              $.each(comment, function (i, comentarios) {  
+            success: function (post) {
                 $.ajax({
+                    method: 'GET',
+                    url: 'http://localhost:8080/users/' + post.userId,
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    success: function (users) {
+                        nombre = users.name;
+                        if (nombre != null) {
+                            nombre = users.name;
+                        }
+                        else { nombre = "-"; }
+
+                        let html = "<div>";
+                        html += nombre;
+                        html += "<br> " + post.body;
+                        html += "</ul>";
+                        $("#publicacion").append(html);
+                    }
+                });
+            }
+        });
+
+        //carga comentario
+        $.ajax({
+            method: 'GET',
+            url: 'http://localhost:8080/post/' + id + '/comment',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function (comment) 
+            {
+                $.each(comment, function (i, comentarios) 
+                {
+                    $.ajax({
                         method: 'GET',
-                        url: 'http://localhost:8080/users/'+comentarios.userId,
+                        url: 'http://localhost:8080/users/' + comentarios.userId,
                         headers: { 'Authorization': 'Bearer ' + token },
-                        success: function (users) 
-                        {                           
-                            nombre=users.name;
-                            if(nombre!=null){
-                                nombre=users.name;
+                        success: function (users) {
+                            nombre = users.name;
+                            if (nombre != null) {
+                                nombre = users.name;
                             }
-                            else
-                            {    nombre="-";        }
-                                  
-                 let html="<div>";
+                            else { nombre = "-"; }
 
-                 html += "<img src="+"assets/img/user_icon-icons.com_66546.png"+" class="+"media-object"+"style=" +"width:0.5px>";
-                 html +="   <b>"+ nombre+"</b>";  
-                 html +="<br>        "+"  "+comentarios.body +"<br> ";     
-                 html +="<br> ";
-                 $("#comentarios").append(html);
-                 html +="<br> ";                 
-                }      
-            }); 
-      });              
-      }
-    });        
-});
+                            let html = "<div>";
 
- function nuevoComentario(body,email)
- {
+                            html += "<img src=" + "assets/img/user_icon-icons.com_66546.png" + " class=" + "media-object" + "style=" + "width:0.5px>";
+                            html += "   <b>" + nombre + "</b>";
+                            html += "<br>        " + "  " + comentarios.body + "<br> ";
+                            html += "<br> ";
+                            $("#comentarios").append(html);
+                            html += "<br> ";
+                        }
+                    });
+                });
+            }
+        });
+    });
+/*
+    function nuevoComentario(body, email) {
 
- }
-
+    }
+*/
 </script>
