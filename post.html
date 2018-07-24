@@ -6,6 +6,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="assets/js/jquery-3.3.1.min.js"></script>
   <script src="assets/js/login-api.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script>
+    var token =window.localStorage.getItem("token");
+        var email= window.localStorage.getItem("email");
+  </script>
+
 </head>
 
 <body>
@@ -34,14 +45,25 @@
     <div class="container">        
         <div class="media">
             <div class="media-left">
-                <img src="assets/img/usuario.ico" class="media-object" style="width:45px">
-              
+                <img src="assets/img/usuario.ico" class="media-object" style="width:45px">              
             </div>
             <div class="media-body">
                 <h4>
                     <div id="publicacion">
                     </div> 
-                </h4>            
+                </h4>        
+                    <div class="container">
+                        <a href="#demo" data-toggle="collapse" style="color: blue">Comentar</a>
+                            <div id="demo" class="collapse">
+                             <form class="form-signin">
+                                <div class="form-group">
+                                    <input type="text" placeholder="Escribe un comentario">
+                                    <button id="newComentario" onclick=""></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
                
                 <div class="media">
                     <div class="media-left">
@@ -58,9 +80,7 @@
         </div>
     </div>
 </body>
-
 </html>
-
 <script>
     $(document).ready(function ()
     {
@@ -78,6 +98,7 @@
     var posteos = $("#posteos");
     var token = window.localStorage.getItem("token");
   
+    var usuarioId="";
     var query = document.location.href;
     var vars = query.split("=");
     const id =vars[1];
@@ -111,7 +132,6 @@
 }
     });               
     
-
     //carga comentario
     $.ajax({
     method: 'GET',
@@ -146,5 +166,10 @@
       }
     });        
 });
+
+ function nuevoComentario(body,email)
+ {
+
+ }
 
 </script>
