@@ -5,9 +5,10 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="assets/js/jquery-3.3.1.min.js"></script>
   <script src="assets/js/login-api.js"></script>
-  <script src="assets/js/usuario.js"></script>
+ 
 <script>
   $(document).ready(function (){
+      let nombreCompleta="";
       $("#btnSalir").click(() => {
           var token = window.localStorage.getItem("token");
           LoginApi.logout(token)
@@ -18,47 +19,93 @@
               .catch(error => console.log(error));
       });
       
-
       //Cargamos Tabla
-      var posteos = $("#posteos");
-      var Usuario=[];
+      var posteos = $("#posteos");    
+      var nombre="";
+      var email="";
       var token = window.localStorage.getItem("token");
-
       if (token == null) {
           window.location = "login.html";
       }
       
-      
+     /* 
       $.ajax({
+        
           method: 'GET',
           url: "http://localhost:8080/users",
           headers: { 'Authorization': 'Bearer ' + token },
           success: function (usuario) {
-              $.each(usuario, function (i, usua) {
+              $.each(usuario, function (ia, usua) {
                 // posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p>By: ' + posts.userId + '</p> ' + posts.body + '</td></table><hr style="color: #0056b2;"></div>');
-                this.email = "";
-    this.id = "";
-    this.name = "";
-    this.password = "";
+                //usu
+    
+
+                usu[ia].email =usua.email;
+                usu[ia].id =usua.id;
+                usu[ia].name =usua.name;
+                usu[ia].password =usua.password;
+                console.log(usu);
+
             });
           }
-
       });
-
+*/
 
       $.ajax({
           method: 'GET',
           url: "http://localhost:8080/post",
           headers: { 'Authorization': 'Bearer ' + token },
           success: function (post) {
-              $.each(post, function (i, posts) {
-                 posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p>By: ' + posts.userId + '</p> ' + posts.body + '</td></table><hr style="color: #0056b2;"></div>');
-              });
+             $.each(post, function (i, posts) {           
+               // console.log(posts.userId);
+                $.ajax({
+                    method: 'GET',
+                    url: 'http://localhost:8080/users/'+posts.userId,
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    success: function (users) 
+                    {
+                        email=users.email;
+                        nombre=users.name;
+
+                         if(nombre!=null){
+                           // console.log(users.email+" -"+users.name);
+                            nombreCompleta=users.name;
+                        }
+                        else
+                        {    nombre="-";        }
+
+                        if(email!=null){
+                          //  console.log(users.email+" -"+users.name);
+                          nombreCompleta=nombreCompleta+' ('+ users.email+')';
+                           // console.log('nombre completo'+ nombreCompleta);
+                          // console.log('1 - nombre completo '+ nombreCompleta );
+                        }
+                        else
+                        {      email="-";     }
+                       // nombreCompleta= users.email+" -"+users.name;                      
+                       
+                  
+                
+             //  console.log(users.email+"-"+users.name);
+               //    console.log('2-'+nombreCompleta);  
+            //     posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p>By: ' + posts.userId + '</p> ' + posts.body + '</td></table><hr style="color: #0056b2;"></div>');
+          /*     posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p>By: ' + posts.userId + '</p> ' +
+                + '</h3> <p>By: ' + email + '</p> ' + '</h3> <p> By: ' + nombre + '</p> ' 
+                + '</h3> <p> By: ' + nombreCompleta + '</p> ' +
+                posts.body + '</td></table><hr style="color: #0056b2;"></div>');*/
+            //    posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p>By: ' + posts.userId + '</p> ' + '</h3> <p> By: ' + nombreCompleta + '</p> ' +  posts.body + '</td></table><hr style="color: #0056b2;"></div>');       
+    posteos.append('<div class="container"><table><td><h3>' + posts.title +'<a onclick="buscarPost('+posts.id+');"><span class="glyphicon glyphicon-log-in"></span></a>' + '</h3> <p> By: ' + nombreCompleta +  '</h3> <p style="color: white">By: ' + posts.userId + '</p> ' + '</p> ' +  posts.body + '</td></table><hr style="color: #0056b2;"></div>');       
+      
+            }
+                    
+                });
+            });
           }
 
       });
 
   });
+
   function buscarPost(id)
   {
       location.href ="post.html?id="+id+"";
@@ -85,6 +132,8 @@
 
 <article>   
     <div class="container">    
+        <div id="comentarios">
+        </div>
         <div class="row">
         <div class="col-sm-8 blog-main">
             <div class="blog-post">
@@ -101,7 +150,6 @@
                     <br>
                     <table class="table">
                     <tbody id="posteos">
-
             </tbody>
 </article>
 </body>
