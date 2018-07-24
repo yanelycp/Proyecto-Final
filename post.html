@@ -31,69 +31,39 @@
         </div>
     </nav>
 
-    <div class="container">
-        <h2>Nested Media Objects</h2>
-        <p>Media objects can also be nested (a media object inside a media object):</p>
-        <br>
+    <div class="container">        
         <div class="media">
             <div class="media-left">
                 <img src="assets/img/usuario.ico" class="media-object" style="width:45px">
+              
             </div>
             <div class="media-body">
-                <h4 class="media-heading">John Doe
-                    <small>
-                        <i>Posted on February 19, 2016</i>
-                    </small>
-                </h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua.</p>
-
-                <!-- Nested media object -->
+                <h4>
+                    <div id="publicacion">
+                    </div> 
+                </h4>            
+               
                 <div class="media">
                     <div class="media-left">
-                        <img src="img_avatar2.png" class="media-object" style="width:45px">
+                        
                     </div>
                     <div class="media-body">
-                        <h4 class="media-heading">John Doe
-                            <small>
-                                <i>Posted on February 19, 2016</i>
-                            </small>
-                        </h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                            et dolore magna aliqua.</p>
-
-                        <!-- Nested media object -->
-                        <div class="media">
-                            <div class="media-left">
-                                <img src="img_avatar3.png" class="media-object" style="width:45px">
-                            </div>
-                            <div class="media-body">
-                                <h4 class="media-heading">John Doe
-                                    <small>
-                                        <i>Posted on February 19, 2016</i>
-                                    </small>
-                                </h4>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                                    ut labore et dolore magna aliqua.</p>
-                            </div>
-                        </div>
-
+                        <h4 class="media-heading">
+                            <div id="comentarios">
+                            </div> 
+                        </h4>                                       
                     </div>
                 </div>
-
             </div>
         </div>
-    </div>
-
-    <div id="comentarios">
-
     </div>
 </body>
 
 </html>
 
 <script>
-    $(document).ready(function (){
+    $(document).ready(function ()
+    {
       $("#btnSalir").click(() => {
           var token = window.localStorage.getItem("token");
           LoginApi.logout(token)
@@ -104,29 +74,77 @@
               .catch(error => console.log(error));
       });
 
-      //Cargamos Tabla
-      var posteos = $("#posteos");
-      var token = window.localStorage.getItem("token");
-   
-      var query = document.location.href;
-      var vars = query.split("=");
-      const id =vars[1];
+    //Cargamos publicacion
+    var posteos = $("#posteos");
+    var token = window.localStorage.getItem("token");
+  
+    var query = document.location.href;
+    var vars = query.split("=");
+    const id =vars[1];
+          
+    $.ajax({
+    method: 'GET',
+    url: 'http://localhost:8080/post/'+id,
+    headers: { 'Authorization': 'Bearer ' + token },
+    success: function (post) {   
+    $.ajax({
+            method: 'GET',
+            url: 'http://localhost:8080/users/'+post.userId,
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function (users) 
+            {                           
+                nombre=users.name;
+                if(nombre!=null){
+                    nombre=users.name;
+                }
+                else
+                {    nombre="-";        }
+            
+                            
+        let html="<div>";       
+        html +=nombre;
+        html +="<br> "+post.body;                 
+        html +="</ul>";
+        $("#publicacion").append(html);            
+    }
+      });  
+}
+    });               
+    
 
+    //carga comentario
     $.ajax({
     method: 'GET',
     url: 'http://localhost:8080/post/'+id+'/comment',
     headers: { 'Authorization': 'Bearer ' + token },
-    success: function (comment) {
-              $.each(comment, function (i, comentarios) {
-                 //posteos.append('hola '+id)
+    success: function (comment) {        
+              $.each(comment, function (i, comentarios) {  
+                $.ajax({
+                        method: 'GET',
+                        url: 'http://localhost:8080/users/'+comentarios.userId,
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        success: function (users) 
+                        {                           
+                            nombre=users.name;
+                            if(nombre!=null){
+                                nombre=users.name;
+                            }
+                            else
+                            {    nombre="-";        }
+                                  
                  let html="<div>";
-                 html +="<ul><li> cuerpo"+comentarios.body+"</li>";
-                 html +="<li>UsuarioId "+comentarios.userId+"</li>";
-                 html +="</ul>";
+
+                 html += "<img src="+"assets/img/user_icon-icons.com_66546.png"+" class="+"media-object"+"style=" +"width:0.5px>";
+                 html +="   <b>"+ nombre+"</b>";  
+                 html +="<br>        "+"  "+comentarios.body +"<br> ";     
+                 html +="<br> ";
                  $("#comentarios").append(html);
-              });
-          }
-});
+                 html +="<br> ";                 
+                }      
+            }); 
+      });              
+      }
+    });        
 });
 
 </script>
