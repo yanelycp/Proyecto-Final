@@ -8,6 +8,12 @@ function login(){
     {
         console.log("successfully: ",token);
         //TODO:REGISTRAR EL TOKEN EN LOCALSTORAGE TAMBIEN DEBEMOS REDIRECCIONAR AL INDEX
+       
+//email
+        var email= window.localStorage.getItem("email");
+        var email=response.token;
+        window.localStorage.setItem("email", email);
+       
         var token=response.token;
         window.localStorage.setItem("token", token);
         window.location="index.html";
@@ -58,8 +64,8 @@ function post(){
     */
     var title=$("#titulo").val();
     var body=$("#body").val();   
-   console.log(title,body);
-   alert(title+"-"+body);
+    console.log(title,body);
+    alert(title+"-"+body);
     
     LoginApi.post(title,body)
     .then(function(response)
@@ -74,6 +80,24 @@ function post(){
        
     });
 }
+/*
+function userId()
+{
+    var id=$("#id_usuario").val();
+    console.log(id);
+    LoginApi.post(id)
+    .then(function(response)
+    {
+        console.log("successfully: ",response);
+        var token=response.token;
+        window.localStorage.setItem("token", token);    
+    })
+    .catch(function(error){
+        console.log("Error: ",error );       
+    });
+}
+*/
+
 
 window.onload=function(){
     //to do: validar si existe un token mandalo al index
